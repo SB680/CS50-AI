@@ -20,10 +20,6 @@ def findsumcombalist(alist,x): #recursively finds the sum of all possible combin
             summation+=alist[i+1]*findsumcombalist(alist[0:i+1],x-1)  
     return summation
 
-#How does the above recursive function work? It is based on the following idea. Let alist = [1,2,3,4,5] and x = 3
-
-#Then the function recursively computes: 5*4*(3+2+1) + 4*3*(2+1) + 3*2*(1)   
-
 def findpolynomialgivenitsroots(roots,coefffirstterm): #determines a polynomial's coefficients given its roots and the coefficient of its highest degree term
     #this function considers only the polynomial of least degree that has the roots specified. Each root must be included in roots as many times as its muliplicity is.  
     polynomial = [] #the coefficients are in descending order of the degree
