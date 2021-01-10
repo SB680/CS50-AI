@@ -63,8 +63,7 @@ def transition_model(corpus, page, damping_factor):
     With probability `damping_factor`, choose a link at random
     linked to by `page`. With probability `1 - damping_factor`, choose
     a link at random chosen from all pages in the corpus.
-    """
-    #print ("CORPUS: ",corpus)
+    """ 
     l = corpus 
     pdist = {}
     if not l[page] == set(): 
@@ -79,14 +78,10 @@ def transition_model(corpus, page, damping_factor):
                     if pages in numoccurlist:
                         numoccurlist[pages] +=1    
                     else:
-                        numoccurlist[pages]=1
-        #print("corpus: ",corpus)
-        #print ("PAGE: ",page) 
-        #print  ("NUMOCCUR: ",numoccurlist)
+                        numoccurlist[pages]=1 
         
         for pages in l[page]:
-            pdist[pages]+=damping_factor*numoccurlist[pages]/len(l[page]) 
-        #print("pdist: ",pdist) 
+            pdist[pages]+=damping_factor*numoccurlist[pages]/len(l[page])  
             
     else:
         for pages in l.keys():
@@ -99,12 +94,7 @@ corp= {'ai.html': {'inference.html', 'algorithms.html'}, 'algorithms.html': {'pr
        'programming.html': {'c.html', 'python.html'}, 'python.html': {'programming.html', 'ai.html','programming.html'}, 'recursion.html': set()}
 transition_model(corp, 'recursion.html', 0.85)
 
-    #raise NotImplementedError
-corpus = {'1.html': {'2.html'}, '2.html': {'3.html', '1.html'}, '3.html': {'4.html', '2.html'}, '4.html': {'2.html'}}
-#c = {"1.html": {"2.html", "3.html"}, "2.html": {"3.html"}, "3.html": {"2.html"}}
-#transition_model(l,'1.html',0.85) 
-
-#0.15/4+(0.85)(1+1/2+1)/4 = 0.56875 -- pgrnk of 2html -- ie P(2) = P(2\1)P(1) + P(visits 2/ at 2)P(2) + ... with P(1) = P(2)... = 1/4
+corpus = {'1.html': {'2.html'}, '2.html': {'3.html', '1.html'}, '3.html': {'4.html', '2.html'}, '4.html': {'2.html'}} 
 
 def sample_pagerank1(corpus, damping_factor): 
     """
@@ -156,30 +146,6 @@ def sample_pagerank(corpus,damping_factor,samples):
     actual_pagerank(corpus,damping_factor,samples)
     return numoccur
 
-
-##def outputvaldict(diction): 
-##    pagelist = {}
-##    for element in diction.keys():      
-##        pagelist[element] = 0
-##    pagelistcopy = copy.deepcopy(pagelist)  
-####    for element in diction.keys():
-####        count = 0 
-####        for page in pagelist: 
-####            if  == page:
-####                pagelistcopy[page]+=1
-##    for pagekey in corpus.keys():
-##        #print ("NEXT ITER: ") 
-##        pagelistcopy = copy.deepcopy(pagelist) 
-##        for value in corpus[pagekey]:
-##            #print("value: ",value)
-##            for page in pagelist: 
-##                if value == page:
-##                    pagelistcopy[page]+=1
-##    return pagelistcopy
-
-#print ("TESTING OUTPUT VALDICT") 
-#outputvaldict(dicti)
-
 def actual_pagerank3(corpus,damping_factor,samples): #NOT CORRECT; THE CORRECT ONE IS BELOW 
     actualranks = {} #calculated values
     pagelist = {} 
@@ -212,26 +178,11 @@ def actual_pagerank3(corpus,damping_factor,samples): #NOT CORRECT; THE CORRECT O
             #print("ACTUAL RANKS: ",actualranks) 
             #damping_factor/len(corpus.keys()) *
     print("ACTUAL RANKS: ",actualranks)
-    return actualranks
+    return actualranks 
 
-#take a dictionary as input; for each key print the number of occurences of each value as another dictionary
-
-#WHAT IS ACTUAL PAGERANK? let x =numkeysincorpus 
-#pgrank(pagex) = (1-df)/x + (df/x)(P(links to pagex/at page1)...) ; let df/x = a constant called const 
-##0.15/4+(0.85)(1+1/2+1)/4 = 0.56875 -- pgrnk of 2html -- ie P(2) = P(2\1)P(1) + P(visits 2/ at 2)P(2) + ... with P(1) = P(2)... = 1/4
 def actual_pagerank(corpus,damping_factor,samples): #the samples argument is redundant because these ranks were found analytically NOT USING ITERATION 
     ar = {} #calculated values 
-    numel = len(corpus.keys()); df = damping_factor; const = df/numel #df/x 
-##    for page in corpus.keys():
-##        if not corpus[page] == set():
-##            ar[page] = (1-df)/(pow(numel,2))
-##        else:
-##            ar[page] = 0
-##    for page in corpus.keys(): 
-##        ar[page] = 0.875*(1-df)/(pow(numel,1)) 
-##    
-##    for page in corpus.keys():
-##        ar[page] += (1)/(pow(numel,2))
+    numel = len(corpus.keys()); df = damping_factor; const = df/numel  
     numempty = 0 
     for page in corpus.keys():  
         if corpus[page] == set():
@@ -239,48 +190,19 @@ def actual_pagerank(corpus,damping_factor,samples): #the samples argument is red
         ar[page] = 0 #avoids keyerror        
     for page in corpus.keys():
         ar[page] += (numempty)/(pow(numel,2))
-        ar[page] +=((numel-numempty)/numel)*(1-df)/numel
-    #the second line expresses this idea: if you're on a page with no links, with probability 1 and NOT (1-df) you randomly go to some other page, ie with p = 1/numel
+        ar[page] +=((numel-numempty)/numel)*(1-df)/numel 
         
     for page in corpus.keys():
         nump = len(corpus[page])
         #print ("Nump: ",nump)
         if not nump == 0: 
-            for p in corpus[page]:
-            #ar[p]+=const/nump #P(links to pagex/at page1) is ALWAYS 1/nump or 0 since at most 1 link to a given page can be there 
-                ar[p]+=const/nump
-    #print("ACTUAL RANKS: ",ar)
-    #print("CHECKING IF SUM IS 1: ")
+            for p in corpus[page]: 
+                ar[p]+=const/nump 
     c = 0 
     for key in ar.keys():
-        c+=ar[key]
-    #print("SUM IS: ",c)   
+        c+=ar[key] 
     return ar
-
-#sample_pagerank(corpus,0.85,15000)
-
-##dicti = {'ai.html': {'algorithms.html', 'inference.html'}, 'algorithms.html': {'recursion.html','programming.html'}, 'c.html': {'programming.html'},
-##        'inference.html': {'ai.html'},
-##        'logic.html': {'inference.html'}, 'programming.html': {'c.html', 'python.html'}, 'python.html': {'ai.html', 'programming.html'}, 'recursion.html': set()}
-##
-##dicti2 = {'ai.html': {'algorithms.html', 'inference.html'}, 'algorithms.html': {'programming.html'}, 'c.html': {'programming.html'},
-##        'inference.html': {'ai.html'},
-##        'logic.html': {'inference.html'}, 'programming.html': {'c.html', 'python.html'}, 'python.html': {'ai.html', 'programming.html'}}
-##x = 0 
-##print("CORPUS: ",dicti) 
-###print(transition_model(dicti,'recursion.html',0.85))
-##print("TRANSITION MODEL: ")
-##trans =transition_model(dicti,'ai.html',0.85) 
-##print(trans)
-##for key in trans.keys():
-##    x+=trans[key]
-##print("x: ",x)
-##ar = actual_pagerank3(dicti,0.85,10000)
-##c = 0 
-##for key in ar.keys():
-##    c+=ar[key]
-##print("c: ",c)
-
+ 
 def findaccuracy(samplerank,actualrank):
     maxd = 0 
     #it takes very long to obtain accuracy better than 0.01  
@@ -302,22 +224,12 @@ def iterate_pagerank(corpus, damping_factor):
     
     actualrank = actual_pagerank(corpus,damping_factor,samples)
     print("ACTUAL RANKS: ",actualrank) 
-    maxd = 0
-    #it takes very long to obtain accuracy better than 0.01 
-##    while maxd > 0.01 or samples == 10000: #the or statement ensures it runs once at least so samplerank is defined 
-##        samplerank = sample_pagerank(corpus,damping_factor,samples)
-##        for page in samplerank: 
-##            maxd = max(abs(samplerank[page]-actualrank[page]),maxd) 
-##        samples+=5000
-
+    maxd = 0 
     while samples < 3900:
         samplerank = sample_pagerank(corpus,damping_factor,samples)
         print("SAMPLES: ",samples)
         print (findaccuracy(samplerank,actualrank))
-        samples+=300 
-    #samplerank = sample_pagerank(corpus,damping_factor,200000)
-    #print("SAMPLERANK: ",samplerank)
-    #print (findaccuracy(corpus, damping_factor,samples))
+        samples+=300  
     
     return samplerank 
     
